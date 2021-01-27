@@ -8,6 +8,7 @@ Created on Thu Jan 21 13:53:36 2021
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from glob import glob
 import os
 import csv
@@ -50,7 +51,7 @@ def lecture(filename):
         rows.extend(range(iline+1, iline+3))
         dataframes = pd.read_csv(filename, skiprows=rows, encoding=enc)
     else:
-        dataframes = pd.read_csv(filename, skiprows=iline)
+        dataframes = pd.read_csv(filename, skiprows=iline, na_values= ['///'])
     
     # Crear vector de tiempo, con el tiempo de lanzamiento para agregar index
     # a dateframes
@@ -61,7 +62,7 @@ def lecture(filename):
     time = pd.to_datetime(time)
         
     dataframes.index = time
-    
+    dataframes.index.rename('Datetime', inplace=True)
     
     # Renombrar columnas que estan mal ordenadas
     badfiles = ['2008-1-12', '2008-1-30', '2008-4-4', '2008-5-9', '2008-5-30',
@@ -77,11 +78,11 @@ def lecture(filename):
     
     # Extraer variables a ocupar
     if 'WindSpeed' in dataframes.keys():
-        # Si el archivo tiene datos de viento
+        # Si el archivo tiene mediciones de viento
         variables = ['GPHeight','Pressure', 'Temperature', 'RelativeHumidity',
                       'O3PartialPressure', 'WindSpeed', 'WindDirection']
     else:
-        # Si el archivo no tiene datos de viento
+        # Si el archivo no tiene mediciones de viento
         variables = ['GPHeight','Pressure', 'Temperature', 'RelativeHumidity',
                       'O3PartialPressure']
         
@@ -95,7 +96,7 @@ def lecture(filename):
 # Cargar los nombres de todos los archivos en las carpetas
 filenames = []
 for year in range(1995, 2020):
-    filenames += glob(path + "/"+str(year)+"/"+str(year)+"*.csv")
+    filenames += glob(path+"/Data/"+str(year)+"/"+str(year)+"*.csv")
 # Ordena todos los archivos segun sus fechas, archivos con nombres yyyymmdd.*.csv
 filenames.sort()
 
@@ -107,12 +108,15 @@ for filename in filenames:
     dfold = pd.concat([dfold, df])
 
 dfold.to_csv(path+'/'+'ozonesondes-1995-2019'+'.csv')
-# fig1 = plt.figure(1)
-# ax1 = fig1.add_subplot(111)
-# ax1.plot(dfold.O3PartialPressure, dfold.GPHeight, ",")    
-# ax1.set_xscale('log')
-# ax1.plot()
-# agrupar datos por dia
-#DFList = []
-#for group in dfold.groupby(dfold.index):
-#    DFList.append(group[1])
+
+
+# Generar archivo que guarda fechas de lanzamiento, con formato para indicar
+# lanzamientos validos, comentarios y rangos de alturas a eliminar
+dates=dfold.index.drop_duplicates()
+
+df_valid = pd.DataFrame(data={'Valid':np.nan*np.zeros(len(dates)), 
+                              'Height_Range' : np.nan*np.zeros(len(dates)), 
+                              'Comments' : np.nan*np.zeros(len(dates))}, 
+                        index=dates)
+
+df_valid.to_csv(path+'/'+'dates_valid_ozonesondes-1995-2019'+'.csv')
