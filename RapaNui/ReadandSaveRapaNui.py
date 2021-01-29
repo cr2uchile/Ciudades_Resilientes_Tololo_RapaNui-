@@ -106,17 +106,31 @@ for filename in filenames:
     print(filename)
     df = lecture(filename)
     dfold = pd.concat([dfold, df])
-
-dfold.to_csv(path+'/'+'ozonesondes-1995-2019'+'.csv')
+dfold.to_csv(path+'/'+'Ozonesondes_RapaNui'+'.csv')
 
 
 # Generar archivo que guarda fechas de lanzamiento, con formato para indicar
-# lanzamientos validos, comentarios y rangos de alturas a eliminar
+# lanzamientos validos, comentarios y rangos de alturas a eliminar. Actualiza
+# el archivo si existe y tiene nuevas fechas, y si ya tiene las fechas cargadas
+# no modifica el archivo existente
+
+# Datetime de lanzamiento
 dates=dfold.index.drop_duplicates()
-
-df_valid = pd.DataFrame(data={'Valid':np.nan*np.zeros(len(dates)), 
-                              'Height_Range' : np.nan*np.zeros(len(dates)), 
-                              'Comments' : np.nan*np.zeros(len(dates))}, 
-                        index=dates)
-
-df_valid.to_csv(path+'/'+'dates_valid_ozonesondes-1995-2019'+'.csv')
+# Genera dateframe para guardar datetimes en formato para validarlos
+df_valid_new = pd.DataFrame(data={'Valid':np.nan*np.zeros(len(dates)), 
+                                  'Height_Range' : np.nan*np.zeros(len(dates)), 
+                                  'Comments' : np.nan*np.zeros(len(dates))}, 
+                            index=dates)
+# Filename
+filename_df_valid = path+'/'+'dates_valid_RapaNui'+'.csv'
+# Verifica si archivo existe o no
+if os.path.isfile(filename_df_valid):
+    df_valid_old = pd.read_csv(filename_df_valid, delimiter=',', index_col=0, 
+                               parse_dates=True)
+    if ~df_valid_new.index.equals(df_valid_old.index):
+        df_valid = pd.concat([df_valid_old, df_valid_new])
+        df_valid = df_valid.iloc[~df_valid.index.duplicated(keep='first')]
+        df_valid.sort_index(inplace=True)
+        df_valid.to_csv(filename_df_valid)
+else:
+    df_valid_new.to_csv(filename_df_valid)
