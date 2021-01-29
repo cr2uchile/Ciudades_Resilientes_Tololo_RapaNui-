@@ -86,13 +86,12 @@ def plot_sonde(df, save=False):
 path = os.getcwd()
 
 # Read data ozonosondes
-dfold = pd.read_csv(path+"/"+"ozonesondes-1995-2019.csv", delimiter=',', 
+dfold = pd.read_csv(path+"/"+"Ozonesondes_RapaNui.csv", delimiter=',', 
                     index_col=0, parse_dates=True)
 
 # Read dates launch
-dates = pd.read_csv(path+"/"+"dates_valid_ozonesondes-1995-2019.csv", 
+dates = pd.read_csv(path+"/"+"dates_valid_RapaNui.csv", 
                     delimiter=',', index_col=0, parse_dates=True)
-dates = dates.index
 
 
 # years to be plotted
