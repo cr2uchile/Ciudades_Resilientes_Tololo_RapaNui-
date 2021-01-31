@@ -17,7 +17,7 @@ def plot_sonde(df, save=False):
     
     date_str = date.strftime('%Y-%m-%d')
     
-    fig, ax = plt.subplots(3, 2, figsize=(12, 18), sharey=True)
+    fig, ax = plt.subplots(2, 3, figsize=(6, 12), sharey=True)
     #plt.cla()
     
     var_names = ['O3PartialPressure', 'Temperature', 'RelativeHumidity', 
@@ -40,26 +40,26 @@ def plot_sonde(df, save=False):
             xlabel = 'Relative Humidity [%]'
             Xmin = 0
             Xmax = 100
-            n = 1
-            m = 0
+            n = 0
+            m = 2
         elif var == 'Pressure':
             xlabel = 'Pressure [hPa]'
             Xmin = 1
             Xmax = 1040
             n = 1
-            m = 1
+            m = 0
         elif var == 'WindSpeed':
             xlabel = 'Wind Speed [°]'
             Xmin = 0
             Xmax = 100
-            n = 2
-            m = 0
+            n = 1
+            m = 1
         elif var == 'WindDirection':
             xlabel = 'Wind Speed [m/s]'
             Xmin = 0
             Xmax = 360
-            n = 2
-            m = 1
+            n = 1
+            m = 2
             
         # Height in km
         z = 1e-3 * df.GPHeight.values
@@ -69,7 +69,8 @@ def plot_sonde(df, save=False):
         ax[n,m].set_xlabel(xlabel)
         ax[n,m].set_xlim(xmin=Xmin, xmax=Xmax)
         ax[n,m].set_ylim(ymin=0, ymax=40)
-    
+        ax[0,0].set_ylabel('Height [km]')
+        ax[1,0].set_ylabel('Height [km]')
     # Add suptitle
     fig.suptitle('Rapa Nui - '+date_str)
     
@@ -86,12 +87,13 @@ def plot_sonde(df, save=False):
 path = os.getcwd()
 
 # Read data ozonosondes
-dfold = pd.read_csv(path+"/"+"Ozonesondes_RapaNui.csv", delimiter=',', 
+dfold = pd.read_csv(path+"/"+"ozonesondes-1995-2019.csv", delimiter=',', 
                     index_col=0, parse_dates=True)
 
 # Read dates launch
-dates = pd.read_csv(path+"/"+"dates_valid_RapaNui.csv", 
+dates = pd.read_csv(path+"/"+"dates_valid_ozonesondes-1995-2019.csv", 
                     delimiter=',', index_col=0, parse_dates=True)
+dates = dates.index
 
 
 # years to be plotted
