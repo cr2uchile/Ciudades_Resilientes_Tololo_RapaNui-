@@ -6,7 +6,6 @@ Created on Thu Jan 21 13:53:36 2021
 @author: sebastian
 """
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from glob import glob
@@ -65,11 +64,12 @@ def lecture(filename):
     dataframes.index.rename('Datetime', inplace=True)
     
     # Renombrar columnas que estan mal ordenadas
-    badfiles = ['2008-1-12', '2008-1-30', '2008-4-4', '2008-5-9', '2008-5-30',
-                '2008-7-5', '2008-7-19', '2008-7-25', '2008-9-5', '2008-9-12',
-                '2008-10-17', '2008-10-24', '2008-12-29']
+    # badfiles = ['2008-1-12', '2008-1-30', '2008-4-4', '2008-5-9', '2008-5-30',
+    #             '2008-7-5', '2008-7-19', '2008-7-25', '2008-9-5', '2008-9-12',
+    #             '2008-10-17', '2008-10-24', '2008-12-29']
+    badfiles = ['2007', '2008']
     
-    if fecha in badfiles:
+    if fecha[0:4] in badfiles:
         dataframes.rename(columns={'WindSpeed' : 'GPHeight', 'WindDirection' : 'RelativeHumidity',
                                   'GPHeight' : 'WindSpeed', 'RelativeHumidity' : 'WindDirection'},
                           inplace=True)
@@ -103,10 +103,14 @@ filenames.sort()
 # cargar todos los datos de ozonosondas en mismo dateframe
 dfold = pd.DataFrame()
 for filename in filenames:
-    print(filename)
     df = lecture(filename)
     dfold = pd.concat([dfold, df])
-dfold.to_csv(path+'/'+'Ozonesondes_RapaNui'+'.csv')
+    
+# remove negative values in O3PartialPressure
+dfold.O3PartialPressure[dfold.O3PartialPressure<0] = np.nan
+
+# Save all profiles in one file
+dfold.to_csv(path+'/'+'RapaNui_all_ozonesondes'+'.csv')
 
 
 # Generar archivo que guarda fechas de lanzamiento, con formato para indicar
@@ -118,11 +122,12 @@ dfold.to_csv(path+'/'+'Ozonesondes_RapaNui'+'.csv')
 dates=dfold.index.drop_duplicates()
 # Genera dateframe para guardar datetimes en formato para validarlos
 df_valid_new = pd.DataFrame(data={'Valid':np.nan*np.zeros(len(dates)), 
-                                  'Height_Range' : np.nan*np.zeros(len(dates)), 
+                                  'Height_inf' : np.nan*np.zeros(len(dates)), 
+                                  'Height_sup' : np.nan*np.zeros(len(dates)), 
                                   'Comments' : np.nan*np.zeros(len(dates))}, 
                             index=dates)
 # Filename
-filename_df_valid = path+'/'+'dates_valid_RapaNui'+'.csv'
+filename_df_valid = path+'/'+'RapaNui_dates_valid'+'.csv'
 # Verifica si archivo existe o no
 if os.path.isfile(filename_df_valid):
     df_valid_old = pd.read_csv(filename_df_valid, delimiter=',', index_col=0, 
