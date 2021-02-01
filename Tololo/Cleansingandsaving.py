@@ -137,11 +137,6 @@ def clean_series_demo(Min, Max, df):
     mean = series.mean()
     std = series.std()
     return mean, std
-#limites de limpieza
-mean_df = df.mean()[0]
-std_df = df.std()[0]
-min_filter = mean_df - 4*std_df
-max_filter = mean_df + 4*std_df
 def clean_series(Min, Max, df):
     """
     Parameters
@@ -208,31 +203,48 @@ def clean_near(df, n, c):
 
     return [df_2, supr_date_1, supr_date_2]
 df = clean_near(df, 3 , 1.5)[0]
+#Removing values under 5 ppbv
+df[df <5] = np.nan
+#Removing values over 100 ppbv
+df[df >100] = np.nan
 # función que permite calcular las medias horarias para un intervalo con
 # una cierta cantidad de datos
 def completitud(df, n, frec):
-     bad_mean = np.isnan(df.O3_ppbv).astype(int).resample(frec).sum()
-     m = np.isnan(df.O3_ppbv).astype(int).resample(frec).sum().max()
-     good_mean = bad_mean > m-n
-     count_bad = good_mean.sum()
-     df_hourly = df.resample(frec).mean()
-     df_hourly[good_mean] = np.nan
-     return [df_hourly, count_bad]
+    """
+    Parameters
+    ----------
+    df : DataFrame, contiene la información de las mediciones.
+    n : int, número de datos mínimo que debe contener el intervalo de tiempo 
+        para calcular la media.
+    frec : str, indica la frecuencia de los datos a promediar.
+
+    Returns
+    -------
+    list
+        Entrega una lista con un DataFrame con los datos promediados en el 
+        intervalo de tiempo sugerido y un conteo de los datos no considerados.
+    """
+    bad_mean = np.isnan(df.O3_ppbv).astype(int).resample(frec).sum()
+    m = np.isnan(df.O3_ppbv).astype(int).resample(frec).sum().max()
+    good_mean = bad_mean > m-n
+    count_bad = good_mean.sum()
+    df_hourly = df.resample(frec).mean()
+    df_hourly[good_mean] = np.nan
+    return [df_hourly, count_bad]
 # Data frame que permite ver los cambios para el cálculo de promedios horarios
 # con 3 o mas mediciones en una hora     
-df2 = completitud(df,3,'H')[0].O3_ppbv 
+df2 = completitud(df,3,'H')[0] 
 FSERIES('O3', 'DMC', df, 1)
 #grafico del dataframe mencionado anteriormente
 FSERIES('O3', 'DMC', df2, 1)
-#FHIST2('O3', 'DMC', df, 50)
+
 #PENDING TIME AXES
 
-#df.O3_ppbv[df.O3_ppbv <5] = np.nan
 orig = os.getcwd()
 
-fn=orig+'\\DATA\\'+'DMC-O3_RH_15m_dmc-1995-2013_clear.csv'
+fn=orig+'\\DATA\\'+'DMC-O3_RH_1H_dmc-1995-2013_clear.csv'
 #fn=orig+'/Data/DMC-O3_RH_15m_dmc-1995-2012_clear'
-df.to_csv(fn)
+df2.to_csv(fn)
 
 
 #Creating histograms of data
