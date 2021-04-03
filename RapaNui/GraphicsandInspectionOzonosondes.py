@@ -3,25 +3,42 @@
 """
 Created on Thu Jan 21 11:32:58 2021
 
-@author: sebastian
+@author: charlie opazo and sebastian villalon
+
+Reading and plotting Rapa Nui ozonesondes data per launch: ozone [mPa], 
+temperature [K], relative humidity [%], wind speed [m/s] and wind direction [°].
+
+In file 'RapaNui_dates_valid.csv', it is indicated which ozone profiles are 
+validated by visual inspection.
+
 """
 
 
 import pandas as pd              # Data structures
+import numpy as np
 import matplotlib.pyplot as plt  # Plotting
+from matplotlib.ticker import MultipleLocator
+from matplotlib.ticker import ScalarFormatter
 import os as os                  # Directory management
 
 
 
-def plot_sonde(df, save=False):
+def plot_sonde(df, date, station, save=False, path_to_save=None):
     """
-
+    Plot sonde data for a date.
+    
     Parameters
     ----------
-    df : TYPE
-        DESCRIPTION.
-    save : TYPE, optional
-        DESCRIPTION. The default is False.
+    df : DataFrame
+        DataFrame with sounding data.
+    date: datetime
+        Lauch datetime
+    station: str
+        Lauch station
+    save : bool, optional
+        Indicates if you want to look at the graph. The default is False.
+    path_to_save: bool, optional
+        Path where to save plot
 
     Returns
     -------
@@ -29,70 +46,90 @@ def plot_sonde(df, save=False):
 
     """
     
+    
+    # Extract variables 
+    Temp = df.Temperature + 273.15
+    O3 = df.O3PartialPressure
+    HR = df.RelativeHumidity
+    Pres = df.Pressure
+    WSpd = df.WindSpeed
+    WDir = df.WindDirection
+            
+    z = 1e-3 * df.GPHeight
+
+
+        
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(7.5,6.2), sharey=True)
+    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.08, top=0.84, wspace=0.15)
+    
+    # Ozone Partial Pressure
+    ax1.plot(O3, z, color='b', marker='.', markersize=1, linestyle='-', linewidth=0.3)
+    ax1.set_ylim(ymin=0, ymax=40)
+    ax1.set_xlim(xmin=0, xmax=28)
+    ax1.yaxis.set_minor_locator(MultipleLocator(1))
+    ax1.set_xticks(np.arange(0, 30, 5))
+    ax1.set_xlabel(r'Ozone [mPa]', color='b')
+    ax1.set_ylabel('Altitude [km]')
+    ax1.spines['bottom'].set_color('#dddddd')
+    ax1.tick_params(axis='x', colors='b')
+    
+    # Temperature
+    ax1_2 = ax1.twiny()
+    ax1_2.plot(Temp, z, color='r', marker='.', markersize=1, linestyle='-', linewidth=0.3)
+    ax1_2.set_xlim(xmin=190, xmax=310)
+    ax1_2.set_xticks(np.arange(190, 311, 30))
+    ax1_2.set_xlabel('Temperature [K]', color='r')
+    ax1_2.spines['top'].set_color('r')
+    ax1_2.tick_params(axis='x', colors='r')
+    
+    
+    # Relative Humidity
+    ax2.plot(HR, z, color='b', marker='.', markersize=1, linestyle='-', linewidth=0.3)
+    ax2.set_xlim(xmin=0, xmax=100)
+    ax2.set_xlabel(r'Relative Humidity [%]', color='b')
+    ax2.spines['bottom'].set_color('b')
+    ax2.tick_params(axis='x', colors='b')
+    
+    # Pressure
+    ax2_2 = ax2.twiny()
+    ax2_2.plot(Pres, z, color='r', marker='.', markersize=1, linestyle='-', linewidth=0.3)
+    ax2_2.set_xlim(xmin=1, xmax=1025)
+    ax2_2.set_xscale('log')
+    ax2_2.set_xticks([1, 10, 100, 1000])
+    ax2_2.get_xaxis().set_major_formatter(ScalarFormatter())
+    ax2_2.set_xlabel(r'Pressure [hPa]', color='r')
+    ax2_2.spines['top'].set_color('r')
+    ax2_2.tick_params(axis='x', colors='r')
+    
+    
+    # Wind Speed
+    ax3.plot(WSpd, z, color='b', marker='.', markersize=1, linestyle='-', linewidth=0.3)
+    ax3.set_xlim(xmin=0, xmax=80)
+    ax3.set_xticks(np.arange(0, 81, 20))
+    ax3.set_xlabel(r'Wind Speed [m/s]', color='b')
+    ax3.spines['bottom'].set_color('b')
+    ax3.tick_params(axis='x', colors='b')
+    
+    # Wind Direction
+    ax3_2 = ax3.twiny()
+    ax3_2.plot(WDir, z, color='r', marker='.', markersize=1, linestyle='-', linewidth=0.3)
+    ax3_2.set_xlim(xmin=0, xmax=360)
+    ax3_2.set_xticks(np.arange(0, 361, 90))
+    ax3_2.set_xlabel(r'Wind Direction [°]', color='r')
+    ax3_2.spines['top'].set_color('r')
+    ax3_2.tick_params(axis='x', colors='r')
+
+
+
+    # Date to string
     date_str = date.strftime('%Y-%m-%d')
     
-    fig, ax = plt.subplots(2, 3, figsize=(16, 11), sharey=True)
-    
-    var_names = ['O3PartialPressure', 'Temperature', 'RelativeHumidity', 
-                 'Pressure', 'WindSpeed', 'WindDirection']
-    
-    for var in var_names:
-        if var == 'O3PartialPressure':
-            xlabel = 'Ozone [mPa]'
-            Xmin = 0
-            Xmax = 28
-            n = 0
-            m = 0
-        elif var == 'Temperature':
-            xlabel = 'Temperature [°C]'
-            Xmin = -82
-            Xmax = 31
-            n = 0
-            m = 1
-        elif var == 'RelativeHumidity':
-            xlabel = 'Relative Humidity [%]'
-            Xmin = 0
-            Xmax = 100
-            n = 0
-            m = 2
-        elif var == 'Pressure':
-            xlabel = 'Pressure [hPa]'
-            Xmin = 1
-            Xmax = 1025
-            n = 1
-            m = 0
-        elif var == 'WindSpeed':
-            xlabel = 'Wind Speed [m/s]'
-            Xmin = 0
-            Xmax = 80
-            n = 1
-            m = 1
-        elif var == 'WindDirection':
-            xlabel = 'Wind Direction [°]'
-            Xmin = 0
-            Xmax = 360
-            n = 1
-            m = 2
-            
-        # Height in km
-        z = 1e-3 * df.GPHeight.values
-        
-        # Plot var in subplot
-        ax[n,m].plot(df[var], z, color='b', marker='.', markersize=3.5, linewidth=0.3)
-        ax[n,m].set_xlabel(xlabel, fontsize=16)
-        ax[n,m].set_xlim(xmin=Xmin, xmax=Xmax)
-        ax[n,m].set_ylim(ymin=0, ymax=40)
-        #add ylabel
-        if m==0 and (n==0 or n==1):
-            ax[n,m].set_ylabel('Altitude [km]', fontsize=16)
-
-    
     # Add suptitle
-    fig.suptitle('Rapa Nui - '+date_str, fontsize=20)
+    fig.suptitle(station+' \n'+'Date : '+date_str, fontsize=14)
     
     # Save figure
     if save == True:
-        fig.savefig(path+"/Graphs_Inspection_Valid/"+'RapaNui_'+date_str+".png", dpi=400)    
+        fig.savefig(path_to_save+station+'_'+date_str+".png", dpi=400)    
 
     return()
 
@@ -101,6 +138,9 @@ def plot_sonde(df, save=False):
 
 # Get path
 path = os.getcwd()
+
+# Path to save figures
+path_save= path+"/Graphs_Inspection_Valid/"
 
 # Read data ozonosondes
 dfold = pd.read_csv(path+"/"+"RapaNui_all_ozonesondes.csv", delimiter=',', 
@@ -111,11 +151,15 @@ dates = pd.read_csv(path+"/"+"RapaNui_dates_valid.csv",
                     delimiter=',', index_col=0, parse_dates=True)
 dates = dates.index
 
+# Estacion
+station = 'Rapa Nui'
+
 
 # years to be plotted
-yi = 2015
+yi = 1995
 yf = 2019
 
+# Iterations for make plots per launch
 for date in dates:
     if date.year in range(yi, yf+1):
         
@@ -123,7 +167,7 @@ for date in dates:
         df = dfold.loc[date]
         
         # plot
-        plot_sonde(df, save=True)
+        plot_sonde(df, date, station, save=True, path_to_save=path_save)
         
         plt.close('all')
        
