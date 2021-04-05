@@ -3,9 +3,22 @@
 """
 Created on Thu Jan 21 13:53:36 2021
 
-@author: sebastian
+@author: charlie opazo and sebastian villalon
+
+Reading and saving Rapa Nui ozonesounding data. Except for removing negative values,
+and strange values, no cleansing or resampling is applied to the data.
+
+Read all sounding data and return one file in .csv with all soundings.
+
+Generate one file .csv for to save info about ozone profiles validation
+
+Data for the period 1995-2019 was downloaded from https://woudc.org/
+This set corresponds to sounding data per launch in Eastern Island station
+
+
 """
 
+# Import
 import pandas as pd
 import numpy as np
 from glob import glob
@@ -13,10 +26,33 @@ import os
 import csv
 import chardet
 
-
+# Get path
 path = os.getcwd()# use your path
 
+
 def lecture(filename):
+    """
+    Read individual sounding file and return dataframe with:
+        - datetime launch [datetime format]
+        - geopotential height [m]
+        - pressure [hPa]
+        - temperature [°C]
+        - relative humidity [%]
+        - ozone partial pressure [mPa]
+        - wind speed [m/s], if it is measured
+        - wind direction [°], if it is measured
+
+    Parameters
+    ----------
+    filename : str
+        Path + filename soundig data.
+
+    Returns
+    -------
+    dataframes : DataFramr
+        Datraframe with sounding data.
+
+    """
     
     # Buscar tipo de encode del archivo
     with open(filename, 'rb') as file:
@@ -64,9 +100,6 @@ def lecture(filename):
     dataframes.index.rename('Datetime', inplace=True)
     
     # Renombrar columnas que estan mal ordenadas
-    # badfiles = ['2008-1-12', '2008-1-30', '2008-4-4', '2008-5-9', '2008-5-30',
-    #             '2008-7-5', '2008-7-19', '2008-7-25', '2008-9-5', '2008-9-12',
-    #             '2008-10-17', '2008-10-24', '2008-12-29']
     badfiles = ['2007', '2008']
     
     if fecha[0:4] in badfiles:
