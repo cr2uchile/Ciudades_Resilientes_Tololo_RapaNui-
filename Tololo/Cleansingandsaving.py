@@ -52,7 +52,7 @@ from pathlib import Path
 
 
 orig = os.getcwd() #Says where the file is
-fn = orig+'\\DATA\\'+'EBAS-O3H-2013-2019.csv'
+fn = os.path.join(orig,'DATA','EBAS-O3H-2013-2019.csv')
 df = pd.read_csv(fn, parse_dates=True, index_col=0)
 df.rename(columns={'Unnamed: 0': 'Date'}, inplace=True)
 
@@ -77,7 +77,7 @@ FHIST('O3', 'EBAS', df, 50) #PENDING Anchored text
 # standard deviation
 orig = os.getcwd() #Says where the file is
 #fn=orig+'/Data/'+'DMC-O3_RH_15m_dmc-1995-2012'  # cambiar fn linea inferior
-fn = orig+'\\DATA\\'+'DMC-O3_RH_15m_dmc-1995-2013.csv'
+fn = os.path.join(orig,'DATA','DMC-O3_RH_15m_dmc-1995-2013.csv')
 
 df = pd.read_csv(fn,index_col=0,parse_dates=True) 
 #df.rename(columns = {'Unnamed: 0':'Date'}, inplace = True)
@@ -242,7 +242,7 @@ FSERIES('O3', 'DMC', df2, 1)
 
 orig = os.getcwd()
 
-fn=orig+'\\DATA\\'+'DMC-O3_RH_1H_dmc-1995-2013_clear.csv'
+fn=os.path.join(orig,'DATA','DMC-O3_RH_1H_dmc-1995-2013_clear.csv')
 #fn=orig+'/Data/DMC-O3_RH_15m_dmc-1995-2012_clear'
 df2.to_csv(fn)
 
@@ -263,7 +263,7 @@ df2.to_csv(fn)
 # A value is trying to be set on a copy of a slice from a DataFrame
 
 # See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-#   df.O3_ppbv[df.O3_ppbv > 68] = np.nan
+#   df.O3_ppbv[df.O3_ppbv > 68] = np.d.to_datetime(Hora, format='%H')nan
 # C:\Users\laura\anaconda3\lib\site-packages\numpy\lib\histograms.py:839: RuntimeWarning: invalid value encountered in greater_equal
 #   keep = (tmp_a >= first_edge)
 # C:\Users\laura\anaconda3\lib\site-packages\numpy\lib\histograms.py:840: RuntimeWarning: invalid value encountered in less_equal

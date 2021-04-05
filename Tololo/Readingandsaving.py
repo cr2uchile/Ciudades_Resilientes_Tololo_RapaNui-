@@ -64,7 +64,7 @@ def leer_ebas(inicio,fin):
     #
     
     orig = os.getcwd() #Says where the current file is
-    datadir=orig+'\\DATA\\DB-EBAS\\' 
+    datadir=os.path.join(orig,'DATA', 'DB-EBAS')
     
     if inicio=='20190101':
         name_data = 'CL0001R.'+inicio+'000000.20200630060000.uv_abs.ozone.air.1y.1h.CL01L_TEI49C_no72417371.CL01L_uv_abs.lev2.nas' # Define el nombre de los archivos a leer
@@ -72,7 +72,7 @@ def leer_ebas(inicio,fin):
         name_data = 'CL0001R.'+inicio+'000000.20201102112043.uv_abs.ozone.air.1y.1h.CL01L_TEI49C_no72417371.CL01L_uv_abs.lev2.nas'
    
     tiempo = pd.date_range(inicio,fin, freq= 'H')                                   
-    input_data = pd.read_csv(datadir+ name_data,decimal=".", delimiter=r"\s+", header =76);  # lectura de datos
+    input_data = pd.read_csv(os.path.join(datadir,name_data),decimal=".", delimiter=r"\s+", header =76);  # lectura de datos
   
     
     input_data = input_data.rename(columns={input_data.keys()[2]: "O3_ug/m3", input_data.keys()[3]: "O3_ppbv",
@@ -195,7 +195,7 @@ def leer_dmc(inicio,fin,tipo):
     # Accordin to "tipo" 118 or 119
 
     orig = os.getcwd() #Says where the file is
-    datadir=orig +'\\DATA\\DB-DMC\\'
+    datadir=os.path.join(orig, 'DATA','DB-DMC')
     #datadir=orig +'/Data/'
 
     if inicio=='1997': 
@@ -211,12 +211,12 @@ def leer_dmc(inicio,fin,tipo):
 #The file contains strange characters    
 
     if tipo==118:
-        input_data = pd.read_csv(datadir+ name_data,decimal=",", delimiter=r";", header =0, na_values= ['?' , 'c '])  # lectura de datos
+        input_data = pd.read_csv(os.path.join(datadir, name_data),decimal=",", delimiter=r";", header =0, na_values= ['?' , 'c '])  # lectura de datos
     elif tipo==119:
-        input_data = pd.read_csv(datadir+ name_data,decimal=",", delimiter=r";", header =0, na_values= '?')
+        input_data = pd.read_csv(os.path.join(datadir, name_data),decimal=",", delimiter=r";", header =0, na_values= '?')
         # In year 2013 the columns don't have labels
         if inicio=='2013':
-            input_data = pd.read_csv(orig+'\\DATA\\DB-DMC\\'+'ET2013.csv', decimal=",", delimiter=r";", na_values= '?',header = None)
+            input_data = pd.read_csv(os.path.join(orig,'DATA','DB-DMC','ET2013.csv'), decimal=",", delimiter=r";", na_values= '?',header = None)
             for i in range(31):
                 input_data = input_data.rename(columns={input_data.keys()[i]: str(i+1)})
     #Renaming column names
@@ -315,9 +315,9 @@ dfebas_O3H = pd.concat([ df_2013 ,  df_2014, df_2015 , df_2016 , df_2017, df_201
 #Saving data frames
     
 orig = os.getcwd() #Says where the file is 
-ruta=orig+'\\DATA\\'
-dfebas_O3H.to_csv(ruta+'EBAS-O3H-2013-2019'+'.csv')
-dfdmc_O3_RH_15m.to_csv(ruta+'DMC-O3_RH_15m_dmc-1995-2013'+'.csv')
+ruta=os.path.join(orig,'DATA')
+dfebas_O3H.to_csv(os.path.join(ruta,'EBAS-O3H-2013-2019.csv'))
+dfdmc_O3_RH_15m.to_csv(os.path.join(ruta,'DMC-O3_RH_15m_dmc-1995-2013.csv'))
 
 
 
