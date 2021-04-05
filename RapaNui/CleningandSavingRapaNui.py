@@ -2,7 +2,29 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan 27 13:42:02 2021
-@author: sebastian
+
+@author: charlie opazo and sebastian villalon
+
+Read file "RapaNui_all_ozonesondes.csv", cleaning and interpolate data.
+Remove points that measured altitude is descending.
+Remove layers in ozone profiles with anomalous measurements
+Interpolate variables to regular altitudes every 100 m between 0 y 35 km-
+Save individual files per launch and one file with all sondes data.
+
+Saved variables: 
+    Pressure [hPa]
+    Temperature [K]
+    Relative Humidity [%]
+    Ozone partial pressure [mba]
+    Ozone [ppbv]
+    Column ozone [DU]
+    Zonal wind [m/s]
+    Meridional wind [m/s]
+    Potential temperature [K]
+    Equivalent potential temperature [K]
+    Water vapor mixing ratio [g/kg]
+
+
 """
 
 # Import libraries
@@ -17,15 +39,18 @@ import warnings
 
 def remov_desc(df):
     """
-
+    Remove rows with points in sonde data that are descending in altitude 
+    during flight time
+    
     Parameters
     ----------
-    df : TYPE
-        DESCRIPTION.
+    df : DataFrame
+        DataFrame with data per launch.
 
     Returns
     -------
-    None.
+    df_clean : DataFrame
+        DataFrame without points that are descending in profile
 
     """
     
@@ -43,36 +68,118 @@ def remov_desc(df):
             pass
             
     # remove zdec in dataframe
-    df = df.iloc[i_zasc]
+    df_clean = df.iloc[i_zasc]
     
-    return df
+    return df_clean
+
 
 
 def interp_serie(z_intp, z, serie, type_intp='linear'):
     """
+    Interpolate vertical profiles to regular altitudes in array z
 
     Parameters
     ----------
-    z_intp : TYPE
-        DESCRIPTION.
-    z : TYPE
-        DESCRIPTION.
-    serie : TYPE
-        DESCRIPTION.
-    type_intp : TYPE, optional
-        DESCRIPTION. The default is 'linear'.
+    z_intp : array
+        Array with altitudes where interpolate.
+    z : array
+        Array with altitudes measured altitudes.
+    serie : array
+        Measured variable to interpolate.
+    type_intp : str, optional
+        Type of interpolation. The default is 'linear'.
 
     Returns
     -------
-    serie_intp : TYPE
-        DESCRIPTION.
+    serie_intp : array
+        Variable interpolated to regular altitudes.
 
     """
-    
+
     serie_f = interp1d(z, serie, type_intp, bounds_error=False)
     serie_intp = serie_f(z_intp)
     
     return serie_intp
+
+
+
+def df_to_csv(df_interp, launch_datetime, z0):
+    """
+    Save dataFrame with sonde data to file .csv
+
+    Parameters
+    ----------
+    df_interp : DataFrame
+        Sonde data interpolated per launch.
+    launch_datetime : datetime
+        Sounding launch datetime
+    z0: float
+        Sounding launch altitude 
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    
+    # Lauch date and launch time to str
+    date_str = date.strftime('%Y%m%d')
+    time_str = date.strftime('%H:%M')
+    # Launch altitude to str
+    z0_str = str(z0)
+    
+    # Filename and path for csv file
+    filename_interp = 'RapaNui_'+date_str+'.csv'
+    path_fn = path+'/'+'Data_Interpolate/'+filename_interp
+    
+    # Headers: variables and units
+    hd1 = ['Alt', 'Press', 'Temp', 'RH', 'O3', 'O3', 'O3', 'uwnd', 'vwnd', 
+           'Speed', 'Direction', 'Theta', 'Theta_e', 'MixRatio']
+    hd2 = ['km', 'hPa', 'K', '%', 'mPa', 'ppbv', 'DU', 'm/s', 'm/s', 'm/s', '°', 'K', 'K', 'g/kg']
+    
+    
+    # Add header with metadata
+    with open(path_fn, 'w') as f:
+        f.write('STATION                          : Easter Island (Rapa Nui), Chile' + '\n')
+        f.write('Data Provider                    : DMC Dirección Meteorológica de Chile, GAW Program' + '\n')
+        f.write('Data Compilation                 : 05 April, 2021, by CR2 Center for Climate and Resilience Research, data interpolated every 100m' + '\n')
+        f.write('Latitude (deg)                   : -27.17' + '\n')
+        f.write('Longitude (deg)                  : -109.42' + '\n')
+        f.write('Elevation (m)                    : ' + z0_str + '\n')
+        f.write('Launch Date (YYYYMMDD)           : ' + date_str + '\n')
+        f.write('Launch Time (UTC)                : ' + time_str + '\n')
+        f.write('Sonde Instrument, SN             : SPC 6A' + '\n')
+        f.write('Radiosonde, SN                   : Vaisala, CCE64B' + '\n')
+        f.write('Solution                         : 1.0% buffered' + '\n')
+        f.write('Applied pump corrections         : ' + '\n')
+        f.write('Pump flow rate (sec/100ml)       : 9000' + '\n')
+        f.write('Background current (uA)          : 9000' + '\n')
+        f.write('Missing or bad values            : 9000' + '\n')
+        
+        
+        
+    # hd = [['STATION', ':', 'Rapa Nui, Chile'], 
+    #       ['Data Provider', ':', 'DMC Dirección Meteorológica de Chile, GAW Program'],
+    #       ['Data Compilation', ':', '05 April, 2021, by CR2 Center for Climate and Resilience Research, data interpolated every 100m'],
+    #       ['Latitude (deg)', ':', ''],
+    #       ['Longitude (deg)', ':', ''],
+    #       ['Elevation (m)', ':', ''],
+    #       ['Launch Date', ':', ''],
+    #       ['Launch Time (UT)', ':', '']
+    #      ]
+    
+    #pd.DataFrame(hd).to_csv(path_fn, mode='w', sep='\t', header=False, index=False)
+    # Save headers for variables
+    pd.DataFrame([hd1, hd2]).to_csv(path_fn, mode='a', sep='\t', header=False, index=False)
+    
+    # Save data
+    df_clear.to_csv(path_fn, mode='a', sep='\t', header=False)
+    
+    
+    return()
+
+
 
 
 
@@ -92,7 +199,7 @@ dates = df_validate.index
 
 
 # Year to interpolate
-yi = 2015
+yi = 1995
 yf = 2019
 
 # Constants
@@ -113,8 +220,6 @@ for date in dates:
     warnings.filterwarnings("ignore")
     
     if date.year in range(yi, yf+1):
-
-        date_str = date.strftime('%Y%m%d')
         
         # Extract data date
         df = dfold.loc[date]
@@ -128,15 +233,19 @@ for date in dates:
 
         
         #Lecture of Data
-        GPHeight = df.GPHeight.copy()*10**-3
-        Pressure = df.Pressure.copy()
-        O3PartialPressure = df.O3PartialPressure.copy()
-        Temperature = df.Temperature.copy()
-        RelativeHumidity = df.RelativeHumidity.copy()
-        Wind_Speed = df.WindSpeed.copy()
-        Wind_Direction = df.WindDirection.copy()
+        GPHeight = df.GPHeight.values*10**-3
+        Pressure = df.Pressure.values
+        O3PartialPressure = df.O3PartialPressure.values
+        Temperature = df.Temperature.values
+        RelativeHumidity = df.RelativeHumidity.values
+        Wind_Speed = df.WindSpeed.values
+        Wind_Direction = df.WindDirection.values
         
-        # Remove ozone data not valid
+        # Remove ozone profile not valid
+        if df_validate.Valid[date]==0:
+            O3PartialPressure = np.nan * np.zeros(len(GPHeight))
+        
+        # Remove layer of ozone profile not valid
         if ~np.isnan(df_validate.loc[date].Height_inf):
             O3PartialPressure[(GPHeight >= df_validate.loc[date].Height_inf) & 
                               (GPHeight <= df_validate.loc[date].Height_sup)] = np.nan
@@ -153,12 +262,14 @@ for date in dates:
         Satured_Mixing_Ratio = 0.622*(Satured_Vapor_Pressure/(Pressure-Satured_Vapor_Pressure))
         Mixing_Ratio = 1e3*(RelativeHumidity/100)*Satured_Mixing_Ratio
         T_potencial_e = (Temperature_K*(1+0.061*Mixing_Ratio))*(1000/Pressure)**(R/Cp)
+        
         Omega_S = np.zeros(len(GPHeight))
         Sum_Omega_S = np.nan*np.zeros(len(GPHeight))
-        for i in range(len(GPHeight)-1):
-            Omega_S[i] =  3.9449*(O3PartialPressure[i]+O3PartialPressure[i+1])*np.log(Pressure[i]/Pressure[i+1])
-            a = np.nansum(Omega_S)
-            Sum_Omega_S[i] = a
+        if df_validate.Valid[date]==1:
+            for i in range(len(GPHeight)-1):
+                Omega_S[i] =  3.9449*(O3PartialPressure[i]+O3PartialPressure[i+1])*np.log(Pressure[i]/Pressure[i+1])
+                a = np.nansum(Omega_S)
+                Sum_Omega_S[i] = a
         #agregar columna de ozono()
         
         
@@ -171,41 +282,56 @@ for date in dates:
         T_potencial_e_interp = interp_serie(z, GPHeight, T_potencial_e)
         U_interp = interp_serie(z, GPHeight, U)
         V_interp = interp_serie(z, GPHeight, V)
-        Wind_interp = np.sqrt(U_interp**2+V_interp**2)
+        Wind_Speed_interp = np.sqrt(U_interp**2+V_interp**2)
         Wind_Direction_interp = np.arctan2(V_interp, U_interp) * (180/np.pi)
         Wind_Direction_interp[Wind_Direction_interp<0] = Wind_Direction_interp[Wind_Direction_interp<0] + 360
         Mixing_Ratio_interp = interp_serie(z, GPHeight, Mixing_Ratio)
         
-        # Interpolate ozone if profile is valid
-        if df_validate.Valid[date]==0:
-            O3_ppbv_interp=np.nan*np.zeros(len(z))
-            O3PartialPressure_interp = np.nan*np.zeros(len(z))
-            Sum_Omega_S = np.nan*np.zeros(len(z))
-        else:
-            O3_ppbv_interp = interp_serie(z, GPHeight, O3_ppbv)
-            O3PartialPressure_interp = interp_serie(z, GPHeight, O3PartialPressure)
-            Sum_Omega_S_interp = interp_serie(z, GPHeight, Sum_Omega_S)
+        O3PartialPressure_interp = interp_serie(z, GPHeight, O3PartialPressure)
+        O3_ppbv_interp = interp_serie(z, GPHeight, O3_ppbv)
+        Sum_Omega_S_interp = interp_serie(z, GPHeight, Sum_Omega_S)
+        
+
         
         # Make dataframe with variables
         df_clear = pd.DataFrame(data={'Pressure':Pressure_interp,'Temp':Temperature_K_interp, 
-                                      'RH':RelativeHumidity_interp, 'O3_mba': O3PartialPressure_interp,
+                                      'RH':RelativeHumidity_interp, 'O3_mPa': O3PartialPressure_interp,
                                       'O3_ppbv':O3_ppbv_interp, 'O3_column':Sum_Omega_S_interp,
-                                      'U':U_interp, 'V':V_interp, 'Theta':T_potencial_interp,
+                                      'U':U_interp, 'V':V_interp, 'WndSpd' : Wind_Speed_interp,
+                                      'WndDir' : Wind_Direction_interp, 'Theta':T_potencial_interp,
                                       'Theta_e':T_potencial_e_interp, 'Mixing_Ratio':Mixing_Ratio_interp}, 
                                 index=z)
         df_clear.index.rename('Alt', inplace=True)
         
+        # Change nan to 9000
+        df_clear.fillna(9000, inplace=True)
+        
         # Round values in dataframe
-        df_clear = df_clear.round(2)
         df_clear.index = np.around(df_clear.index, 1)
+        df_clear['Pressure'] = df_clear['Pressure'].map('{:.3f}'.format)
+        df_clear['Temp'] = df_clear['Temp'].map('{:.3f}'.format)
+        df_clear['RH'] = df_clear['RH'].map('{:.3f}'.format)
+        df_clear['O3_mPa'] = df_clear['O3_mPa'].map('{:.3f}'.format)
+        df_clear['O3_ppbv'] = df_clear['O3_ppbv'].map('{:.3f}'.format)
+        df_clear['O3_column'] = df_clear['O3_column'].map('{:.3f}'.format)
+        df_clear['U'] = df_clear['U'].map('{:.3f}'.format)
+        df_clear['V'] = df_clear['V'].map('{:.3f}'.format)
+        df_clear['WndSpd'] = df_clear['WndSpd'].map('{:.3f}'.format)
+        df_clear['WndDir'] = df_clear['WndDir'].map('{:.3f}'.format)
+        df_clear['Theta'] = df_clear['Theta'].map('{:.3f}'.format)
+        df_clear['Theta_e'] = df_clear['Theta_e'].map('{:.3f}'.format)
+        df_clear['Mixing_Ratio'] = df_clear['Mixing_Ratio'].map('{:.5f}'.format)
         
-        # Save individual file per ozonesonde
-        df_clear.to_csv(path+'/'+'Data_Interpolate/'+'_RapaNui_'+date_str+'.csv')
         
         
-        # Add ozonesonde to dataframe 
+        # Save sounding interpolated
+        df_to_csv(df_clear, date, 1e3*GPHeight[0])
+        
+        
+        # Add ozonesonde to dataframe with all soundings
         df_clear2 = df_clear.copy()
         
+        # Make index datetime
         N = len(z)
         time = []
         for i in range(N):
@@ -213,12 +339,14 @@ for date in dates:
         time = pd.to_datetime(time)
         time.name ='Datetime'
         
+        # Add multi index to dataframe [datetime, altitude]
         df_clear2.set_index([time, df_clear2.index], inplace=True)
         
         # Add to dataframe complete
         dfold_clear = pd.concat([dfold_clear, df_clear2])
-        
-        #break        
+                
+    
     
 # Save in .csv all ozonesondes interpolated
+dfold_clear.replace(to_replace=9000, value=np.nan, inplace=True)
 dfold_clear.to_csv(path+'/'+'RapaNui_all_clear.csv')
