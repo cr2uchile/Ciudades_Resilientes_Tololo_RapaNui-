@@ -28,12 +28,16 @@ from datetime import datetime as dt
 from scipy.optimize import leastsq
 from __toolsTrend import *
 
-def tendencia(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
+def tendencia(DMC_data, EBAS_data, radio_trends, 
+              radio_trends_period_esp,encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
+    
     df_d =  pd.concat([DMC_data,EBAS_data]).loc['1997':'2020']
     
     #aux_a , aux_b = info_data('2015-01-01 01','2020-08-09 23',df,'D')
-
-    df_m = df_d.resample('M').mean().loc['1997':'2020']
+    if radio_trends_period_esp == 'Diario':
+        df_m = df_d.resample('D').mean().loc['1997':'2020']
+    elif radio_trends_period_esp == 'Mensual':
+        df_m = df_d.resample('M').mean().loc['1997':'2020']    
     df_m.O3_ppbv[df_m.O3_ppbv<20] = np.nan
     df_m = df_m.fillna(df_m.mean()) 
     s    = df_m.O3_ppbv.values 
@@ -58,18 +62,21 @@ def tendencia(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, enco
     fig.add_trace(go.Scatter(
             x=df_m.index,
             y=df_m["O3_ppbv"],
+            name='Mediciones',
             mode='markers',
             #text = aux_a    ,  
             marker={
                 'size': 6,
                 #'color': aux_b,
                 'opacity': 0.5,
+                'color': '#0668a1',
                 'line': {'width': 0.9, 'color': 'black'}
             }
         ))
     fig.add_trace(go.Scatter( 
                 x=df_m.index, 
                 y=model_trend[0],
+                 name='Tendencia',
                 mode='markers', 
                 marker=dict(size= 6, color='black')
                 ))
@@ -83,8 +90,9 @@ def tendencia(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, enco
                     textposition="top right",
                     textfont=dict(
                     family="Times New Roman",
-                    size=14,
-                    color="black")  #
+                    size=16,
+                    color="#0668a1"),
+                    showlegend=False#
                     ))
     fig.update_layout(
             showlegend = True,
@@ -128,12 +136,16 @@ images= [       dict(
                     layer="above")])
     return fig
 
-def trend(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
+def trend(DMC_data, EBAS_data, radio_trends, radio_trends_period,
+          encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
     df_d =  pd.concat([DMC_data,EBAS_data]).loc['2012':'2020']
     
     #aux_a , aux_b = info_data('2015-01-01 01','2020-08-09 23',df,'D')
 
-    df_m = df_d.resample('M').mean().loc['2012':'2020']
+    if radio_trends_period == 'Daily':
+        df_m = df_d.resample('D').mean().loc['1997':'2020']
+    elif radio_trends_period == 'Monthly':
+        df_m = df_d.resample('M').mean().loc['1997':'2020']
     df_m.O3_ppbv[df_m.O3_ppbv<20] = np.nan
     df_m = df_m.fillna(df_m.mean()) 
     s    = df_m.O3_ppbv.values 
@@ -161,6 +173,7 @@ def trend(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, encoded_
             marker={
                 'size': 6,
                 #'color': aux_b,
+                'color': '#0668a1',
                 'opacity': 0.5,
                 'line': {'width': 0.9, 'color': 'black'}
             }
@@ -182,8 +195,9 @@ def trend(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, encoded_
                     textposition="top right",
                     textfont=dict(
                     family="Times New Roman",
-                    size=14,
-                    color="black")  #
+                    size=16,
+                    color="#0668a1"),
+                    showlegend=False
                     ))
     fig.update_layout(
             showlegend = False,
@@ -192,7 +206,7 @@ def trend(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, encoded_
             title_font_size=30,
             yaxis=dict(
                 range=[0, 65]),
-            margin=dict(t=0, b=0, l=0, r = 0),
+            margin=dict(t=50, b=10, l=10, r = 10),
             title_font_color = 'dimgray',
             plot_bgcolor='#f6f6f6',
             paper_bgcolor='#f6f6f6',

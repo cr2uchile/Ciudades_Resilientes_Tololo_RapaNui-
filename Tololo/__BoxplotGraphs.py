@@ -27,7 +27,7 @@ from textwrap import dedent
 from datetime import datetime as dt
 from scipy.optimize import leastsq
 
-def BoxENG(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_eng):
+def BoxENG(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_eng, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
     g =pd.concat([DMC_data,EBAS_data]).loc[start_date:end_date]
     if radio_boxplot_eng =='Hourly':           
         mat_h = g.set_index(g.index.hour, append=False).unstack()['O3_ppbv']    
@@ -58,7 +58,7 @@ def BoxENG(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_eng):
         height=400,
         margin=dict(t=50, b=10, l=10, r = 10),
         yaxis=dict(
-            #title_text= '<b>' + yaxis6_name + '</b>', 
+        range=[0, 70],    
         titlefont=dict(size=14,color='black')),
         xaxis=dict(
             #title_text="<b>"+ radio2_name + "</b> ",
@@ -71,6 +71,53 @@ def BoxENG(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_eng):
     fig.update_xaxes(
         tickangle = 90
         )
+    fig.update_layout(
+        autosize=False,
+        height=480,
+        width=540,
+        bargap=0.15,
+        bargroupgap=0.1,
+        barmode="stack",
+        hovermode="x",
+        margin=dict(t=100, b=10, l=10, r = 10),
+    )
+    fig.update_layout(
+            images= [       dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_cr2_celeste),
+                    xref="paper", yref="paper",
+                    x=0.25, y=1.0,
+                    sizex=0.2, sizey=0.2,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")    ,dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_DMC),
+                    xref="paper", yref="paper",
+                    x=0.58, y=1.05,
+                    sizex=0.15, sizey=0.15,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above"), dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_GWA),
+                    xref="paper", yref="paper",
+                    x=0.95, y=1.05,
+                    sizex=0.17, sizey=0.17,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")])
+    
+    fig.update_layout(
+        autosize=False,
+        height=480,
+        width=540,
+        bargap=0.15,
+        bargroupgap=0.1,
+        barmode="stack",
+        hovermode="x",
+        margin=dict(t=100, b=10, l=10, r = 10),
+    )
 # # Update 3D scene options
 #     fig.update_scenes(
 #         aspectratio=dict(x=1, y=1, z=0.7),
@@ -81,7 +128,7 @@ def BoxENG(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_eng):
 # button_layer_1_height = 1.08
     return fig
 
-def BoxESP(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_esp):
+def BoxESP(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_esp, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
     g =pd.concat([DMC_data,EBAS_data]).loc[start_date:end_date]
     if radio_boxplot_esp =='Horario':           
         mat_h = g.set_index(g.index.hour, append=False).unstack()['O3_ppbv']    
@@ -112,7 +159,7 @@ def BoxESP(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_esp):
         height=400,
         margin=dict(t=50, b=10, l=10, r = 10),
         yaxis=dict(
-            #title_text= '<b>' + yaxis6_name + '</b>', 
+        range=[0, 70], 
         titlefont=dict(size=14,color='black')),
         xaxis=dict(
             #title_text="<b>"+ radio2_name + "</b> ",
@@ -125,6 +172,42 @@ def BoxESP(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_esp):
     fig.update_xaxes(
         tickangle = 90
         )
+    fig.update_layout(
+            images= [       dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_cr2_celeste),
+                    xref="paper", yref="paper",
+                    x=0.25, y=1.0,
+                    sizex=0.2, sizey=0.2,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")    ,dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_DMC),
+                    xref="paper", yref="paper",
+                    x=0.58, y=1.05,
+                    sizex=0.15, sizey=0.15,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above"), dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_GWA),
+                    xref="paper", yref="paper",
+                    x=0.95, y=1.05,
+                    sizex=0.17, sizey=0.17,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")])
+    fig.update_layout(
+        autosize=False,
+        height=480,
+        width=540,
+        bargap=0.15,
+        bargroupgap=0.1,
+        barmode="stack",
+        hovermode="x",
+        margin=dict(t=100, b=10, l=10, r = 10),
+    )
 # # Update 3D scene options
 #     fig.update_scenes(
 #         aspectratio=dict(x=1, y=1, z=0.7),

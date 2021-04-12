@@ -40,7 +40,17 @@ def HistENG(DMC_data, EBAS_data, start_date, end_date):
         paper_bgcolor='#f6f6f6',
         titlefont=dict(size=14,color='black'),
         yaxis_title=ylabel,
-        xaxis_title="O<sub>3</sub> [ppbv]") 
+        xaxis_title="O<sub>3</sub> [ppbv]")
+    fig.update_layout(
+        autosize=False,
+        height=480,
+        width=540,
+        bargap=0.15,
+        bargroupgap=0.1,
+        barmode="stack",
+        hovermode="x",
+        margin=dict(t=100, b=10, l=10, r = 10),
+    )
     return fig 
 
 def HistESP(DMC_data, EBAS_data, start_date, end_date):
@@ -57,4 +67,14 @@ def HistESP(DMC_data, EBAS_data, start_date, end_date):
         titlefont=dict(size=14,color='black'),
         yaxis_title=ylabel,
         xaxis_title="O<sub>3</sub> [ppbv]")
+    fig.update_layout(
+        autosize=False,
+        height=480,
+        width=540,
+        bargap=0.15,
+        bargroupgap=0.1,
+        barmode="stack",
+        hovermode="x",
+        margin=dict(t=100, b=10, l=10, r = 10),
+    )    
     return fig 

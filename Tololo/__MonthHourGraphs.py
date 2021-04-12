@@ -28,7 +28,7 @@ from datetime import datetime as dt
 from scipy.optimize import leastsq
 
 
-def MesHora(DMC_data, EBAS_data, start_date, end_date):
+def MesHora(DMC_data, EBAS_data, start_date, end_date, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
     g =pd.concat([DMC_data,EBAS_data]).loc[start_date:end_date]
     a = g.groupby([g.index.month, g.index.hour]).mean()
     O3_mesh = [a.O3_ppbv.values[24*i:24*(i+1)] for i in range (0,13)]
@@ -58,7 +58,7 @@ def MesHora(DMC_data, EBAS_data, start_date, end_date):
 
     fig.update_layout(
         width=540,
-        height=400,
+        height=540,
         autosize=False,
         margin=dict(t=50, b=10, l=10, r = 10),
         title_font_family="Times New Roman",
@@ -79,10 +79,49 @@ def MesHora(DMC_data, EBAS_data, start_date, end_date):
 
 # Add drowdowns
 # button_layer_1_height = 1.08
+    fig.update_layout(
+            images= [       dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_cr2_celeste),
+                    xref="paper", yref="paper",
+                    x=0.25, y=1.0,
+                    sizex=0.2, sizey=0.2,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")    ,dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_DMC),
+                    xref="paper", yref="paper",
+                    x=0.58, y=1.05,
+                    sizex=0.15, sizey=0.15,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above"), dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_GWA),
+                    xref="paper", yref="paper",
+                    x=0.95, y=1.05,
+                    sizex=0.17, sizey=0.17,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")])
+    
+    # update layout properties
+    fig.update_layout(
+        autosize=False,
+        height=480,
+        width=540,
+        bargap=0.15,
+        bargroupgap=0.1,
+        barmode="stack",
+        hovermode="x",
+        margin=dict(t=100, b=10, l=10, r = 10),
+    )
+
 
     return fig
 
-def MonthHour(DMC_data, EBAS_data, start_date, end_date):
+def MonthHour(DMC_data, EBAS_data, start_date, end_date, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA):
     
     g =pd.concat([DMC_data,EBAS_data]).loc[start_date:end_date]
     a = g.groupby([g.index.month, g.index.hour]).mean()
@@ -126,6 +165,44 @@ def MonthHour(DMC_data, EBAS_data, start_date, end_date):
         xaxis_title=xlabel,
         yaxis_title=ylabel,
         )
+    fig.update_layout(
+            images= [       dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_cr2_celeste),
+                    xref="paper", yref="paper",
+                    x=0.25, y=1.0,
+                    sizex=0.2, sizey=0.2,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")    ,dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_DMC),
+                    xref="paper", yref="paper",
+                    x=0.58, y=1.05,
+                    sizex=0.15, sizey=0.15,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above"), dict(
+                    source='data:image/png;base64,{}'.format(encoded_image_GWA),
+                    xref="paper", yref="paper",
+                    x=0.95, y=1.05,
+                    sizex=0.17, sizey=0.17,
+                    xanchor="right",
+                    yanchor="bottom",
+                    #sizing="stretch",
+                    layer="above")])
+    
+    # update layout properties
+    fig.update_layout(
+        autosize=False,
+        height=480,
+        width=540,
+        bargap=0.15,
+        bargroupgap=0.1,
+        barmode="stack",
+        hovermode="x",
+        margin=dict(t=100, b=10, l=10, r = 10),
+    )
 
 # # Update 3D scene options
 #     fig.update_scenes(
