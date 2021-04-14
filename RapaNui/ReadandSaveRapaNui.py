@@ -26,9 +26,6 @@ import os
 import csv
 import chardet
 
-# Get path
-path = os.getcwd()# use your path
-
 
 def lecture(filename):
     """
@@ -124,26 +121,42 @@ def lecture(filename):
     
     return dataframes    
 
-    
+
+
+
+# Get path
+path = os.getcwd()# use your path
 
 # Cargar los nombres de todos los archivos en las carpetas
 filenames = []
 for year in range(1995, 2020):
-    filenames += glob(path+"/Data/"+str(year)+"/"+str(year)+"*.csv")
-# Ordena todos los archivos segun sus fechas, archivos con nombres yyyymmdd.*.csv
-filenames.sort()
+    fns = os.path.join(path, "Data", str(year), str(year)+"*.csv")
+    filenames += glob(fns)
+
 
 # cargar todos los datos de ozonosondas en mismo dateframe
-dfold = pd.DataFrame()
+dfold_aux = pd.DataFrame()
 for filename in filenames:
     df = lecture(filename)
-    dfold = pd.concat([dfold, df])
+    dfold_aux = pd.concat([dfold_aux, df])
+
+# Datetime de lanzamiento
+dates_aux = dfold_aux.index.drop_duplicates()
+dates_sort = dates_aux.sort_values()
+
+# sort dataframe by launch datetime
+dfold = pd.DataFrame()
+for dat in dates_sort:
+    dfold = pd.concat([dfold, dfold_aux.loc[dat]])
     
 # remove negative values in O3PartialPressure
 dfold.O3PartialPressure[dfold.O3PartialPressure<0] = np.nan
 
 # Save all profiles in one file
-dfold.to_csv(path+'/'+'RapaNui_all_ozonesondes'+'.csv')
+out_allsondes = os.path.join(path, 'RapaNui_all_ozonesondes.csv')
+dfold.to_csv(out_allsondes, sep=';')
+
+
 
 
 # Generar archivo que guarda fechas de lanzamiento, con formato para indicar
@@ -152,23 +165,44 @@ dfold.to_csv(path+'/'+'RapaNui_all_ozonesondes'+'.csv')
 # no modifica el archivo existente
 
 # Datetime de lanzamiento
-dates=dfold.index.drop_duplicates()
+dates = dates_sort
 # Genera dateframe para guardar datetimes en formato para validarlos
-df_valid_new = pd.DataFrame(data={'Valid':np.nan*np.zeros(len(dates)), 
-                                  'Height_inf' : np.nan*np.zeros(len(dates)), 
-                                  'Height_sup' : np.nan*np.zeros(len(dates)), 
+df_valid_new = pd.DataFrame(data={'Valid_O3':np.nan*np.zeros(len(dates)), 
+                                  'Height_inf_O3' : np.nan*np.zeros(len(dates)), 
+                                  'Height_sup_O3' : np.nan*np.zeros(len(dates)), 
+                                  'Valid_T':np.nan*np.zeros(len(dates)), 
+                                  'Height_inf_T' : np.nan*np.zeros(len(dates)), 
+                                  'Height_sup_T' : np.nan*np.zeros(len(dates)), 
+                                  'Valid_P':np.nan*np.zeros(len(dates)), 
+                                  'Height_inf_P' : np.nan*np.zeros(len(dates)), 
+                                  'Height_sup_P' : np.nan*np.zeros(len(dates)), 
+                                  'Valid_RH':np.nan*np.zeros(len(dates)), 
+                                  'Height_inf_RH' : np.nan*np.zeros(len(dates)), 
+                                  'Height_sup_RH' : np.nan*np.zeros(len(dates)), 
+                                  'Valid_V':np.nan*np.zeros(len(dates)), 
+                                  'Height_inf_V' : np.nan*np.zeros(len(dates)), 
+                                  'Height_sup_V' : np.nan*np.zeros(len(dates)), 
                                   'Comments' : np.nan*np.zeros(len(dates))}, 
                             index=dates)
 # Filename
-filename_df_valid = path+'/'+'RapaNui_dates_valid'+'.csv'
+filename_df_valid = os.path.join(path, 'RapaNui_dates_valid.csv')
 # Verifica si archivo existe o no
 if os.path.isfile(filename_df_valid):
-    df_valid_old = pd.read_csv(filename_df_valid, delimiter=',', index_col=0, 
+    df_valid_old = pd.read_csv(filename_df_valid, delimiter=';', index_col=0, 
                                parse_dates=True)
     if ~df_valid_new.index.equals(df_valid_old.index):
         df_valid = pd.concat([df_valid_old, df_valid_new])
         df_valid = df_valid.iloc[~df_valid.index.duplicated(keep='first')]
         df_valid.sort_index(inplace=True)
-        df_valid.to_csv(filename_df_valid)
+        df_valid.to_csv(filename_df_valid, sep=';')
 else:
-    df_valid_new.to_csv(filename_df_valid)
+    df_valid_new.to_csv(filename_df_valid, sep=';')
+
+
+
+
+# Generar archivo con fechas en formato %yy %mm %dd %HH %MM´ para utilizar en 
+# codigo generador de trayectores
+filename_datestr = os.path.join(path, 'RapaNui_DatesStr_hysplit.csv')
+dates_str = pd.DataFrame(dates.strftime('%y %m %d %H %M'))
+dates_str.to_csv(filename_datestr, header=False,index=False)
