@@ -8,19 +8,19 @@ Created on Thu Jan 21 11:32:58 2021
 Reading and plotting Rapa Nui ozonesondes data per launch: ozone [mPa], 
 temperature [K], relative humidity [%], wind speed [m/s] and wind direction [°].
 
-In file 'RapaNui_dates_valid.csv', it is indicated which ozone profiles are 
+In file 'RapaNui_dates_valid.csv', must be indicated which ozone profiles are 
 validated by visual inspection.
 
 """
 
-
+# Import libraries
 import pandas as pd              # Data structures
 import numpy as np
 import matplotlib.pyplot as plt  # Plotting
 from matplotlib.ticker import MultipleLocator
 from matplotlib.ticker import ScalarFormatter
 import os as os                  # Directory management
-
+import platform
 
 
 def plot_sonde(df, date, station, save=False, path_to_save=None):
@@ -124,12 +124,22 @@ def plot_sonde(df, date, station, save=False, path_to_save=None):
     # Date to string
     date_str = date.strftime('%Y-%m-%d')
     
+    # Identify newline character for operative system
+    if platform.system() == 'Windows':
+        nl = '\r\n'
+    elif platform.system() == 'Linux':
+        nl = '\n'
+    elif platform.system() == 'Darwin': #for MAC
+        nl = '\r'
+    
+    
     # Add suptitle
-    fig.suptitle(station+' \n'+'Date : '+date_str, fontsize=14)
+    fig.suptitle(station+nl+'Date : '+date_str, fontsize=14)
     
     # Save figure
     if save == True:
-        fig.savefig(path_to_save+station+'_'+date_str+".png", dpi=400)    
+        fig_name = os.path.join(path_to_save, station+'_'+date_str+".png")
+        fig.savefig(fig_name, dpi=400)    
 
     return()
 
@@ -140,20 +150,17 @@ def plot_sonde(df, date, station, save=False, path_to_save=None):
 path = os.getcwd()
 
 # Path to save figures
-path_save= path+"/Graphs_Inspection_Valid/"
+path_save= os.path.join(path, "Graphs_Inspection_Valid")
 
 # Read data ozonosondes
-dfold = pd.read_csv(path+"/"+"RapaNui_all_ozonesondes.csv", delimiter=',', 
-                    index_col=0, parse_dates=True)
+fn_sondes = os.path.join(path, "RapaNui_all_ozonesondes.csv")
+dfold = pd.read_csv(fn_sondes, delimiter=';', index_col=0, parse_dates=True)
 
-# Read dates launch
-dates = pd.read_csv(path+"/"+"RapaNui_dates_valid.csv", 
-                    delimiter=',', index_col=0, parse_dates=True)
-dates = dates.index
+# Sounding datess
+dates = dfold.index.drop_duplicates()
 
 # Estacion
 station = 'Rapa Nui'
-
 
 # years to be plotted
 yi = 1995
