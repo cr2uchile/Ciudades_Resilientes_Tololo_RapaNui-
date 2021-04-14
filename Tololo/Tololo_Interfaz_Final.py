@@ -66,7 +66,7 @@ fig.update_geos(projection_type="orthographic",
 fig.update_layout(height=200, margin={"r":0,"t":0,"l":0,"b":0}, 
                   paper_bgcolor='#f6f6f6',
                   plot_bgcolor='#f6f6f6')
-fig.show()
+
 
 #######################
 ### -tabs prperties
@@ -76,6 +76,7 @@ tabs_styles = {
 tab_style = {
     'borderBottom': '1px solid #d6d6d6',
     'padding': '6px',
+    'color': '#0668a1',
 }
 
 tab_selected_style = {
@@ -150,7 +151,7 @@ def Web_Language(Switch_Lang):
                 selected_className='custom-tab--selected'
             ),
             dcc.Tab(
-                label='Tab four',
+                label='Methods',
                 value='tab-4',
                 className='custom-tab',style=tab_style, selected_style=tab_selected_style,
                 selected_className='custom-tab--selected'
@@ -204,14 +205,12 @@ def render_content(tab, Switch_Lang):
 ################################################ Informacion en Ingles##################            
             return [html.Div([html.Div([html.H1("Tololo (30.169 S, 70.804 W, 81m)", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'})
                 ,dcc.Markdown(dedent(f'''
+                As a part of the Global Atmospheric Watch (GAW) program, a monitoring station of radiation and surface ozone was installed by the World Meteorological Organization on the premises of the Cerro Tololo Inter-American Observatory, which is located near La Serena, Chile. Moreover, it is the objective of the “QHAWAYRA” (Quechua for “air survey”) program to make this site a fully equipped GAW station (Gallardo et al. 2000). The GAW measurements describe long-term changes in the atmospheric conditions. This goal requires measuring sites at which the anthropogenic impact of sources in the area is either avoided or is identified such that the data can be stratified accordingly. For this reason, the locations of these stations are sometimes chosen on summits of high mountains such as Cerro Tololo. Cerro Tololo (2200 m above mean sea level (MSL)) is situated about 50 km east of the Chilean coast at 30°S, where the cities of La Serena and Coquimbo are located. The topography of the area can be described as very complex. The valleys around these mountains are deep, down to 500 m MSL, and the Andes mountain range is only 30 km east of Cerro Tololo with heights of up to 6 km MSL.                     
+                                     
 
-                Principal Investigators: Laura Gallardo, CR2 – Center for Climate and Resilience Research.       
-                Email: [lgallard@u.uchile.cl](mailto:lgallard@u.uchile.cl)
-                Av. Blanco Encalada 2002, Santiago, Chile
-                
-                Carmen Vega, DMC - Chilean Meteorological Office                                         
-                Email : [carmen.vega@dgac.gob.cl](mailto:carmen.vega@dgac.gob.cl)
-                Av. Portales 3450, Estación Central, Chile 
+                Principal Investigators: Laura Gallardo, Carmen Vega        
+                Emails: [lgallard@u.uchile.cl](mailto:lgallard@u.uchile.cl), [carmen.vega@dgac.gob.cl](mailto:carmen.vega@dgac.gob.cl)
+    
                 
                 Data Site Manager: Francisca Muñoz, CR2 – Center for Climate and Resilience Research.            
                 Email: [fmunoz@dgf.uchile.cl](mailto:fmunoz@dgf.uchile.cl)
@@ -238,7 +237,7 @@ def render_content(tab, Switch_Lang):
                                                     'backgroundColor': '#f6f6f6', 'display': 'inline-block', 'margin-top':'50px', 'border-right': '2px solid #0668a1'}), 
                 html.Div([
                                           html.Img(src='data:image/png;base64,{}'.format(encoded_image_tololo), 
-                                   style={'height':'45%', 'width':'450px','margin-right':'75px' ,'margin-left':'75px', 'margin-top':'75px', 'border': '0px solid #0668a1', 'border-radius': '10px'}), html.Caption('AAAAA', style={'margin-left':'75px'}),
+                                   style={'height':'45%', 'width':'450px','margin-right':'75px' ,'margin-left':'75px', 'margin-top':'75px', 'border': '0px solid #0668a1', 'border-radius': '10px'}), dcc.Markdown('Credits: NOAO/NSF/AURA', style={'margin-left':'75px'}),
                                     html.H1("Map", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'}), 
                                     dcc.Graph(figure=fig)
                                     ], 
@@ -252,16 +251,23 @@ def render_content(tab, Switch_Lang):
                 html.Div([
                 html.Div([html.H1("Tololo (30.169 S, 70.804 W, 81m)", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'}),
                              dcc.Markdown(dedent(f'''
-                Principales Investigadoras: Laura Gallardo, CR2 – Centro de Ciencia del Clima y la Resiliencia.    
-                Email: [lgallard@u.uchile.cl](mailto:lgallard@u.uchile.cl)
+                As a part of the Global Atmospheric Watch (GAW) program, a monitoring station of radiation and surface ozone was installed by the World Meteorological Organization on the premises of the Cerro Tololo Inter-American Observatory, which is located near La Serena, Chile. Moreover, it is the objective of the “QHAWAYRA” (Quechua for “air survey”) program to make this site a fully equipped GAW station (Gallardo et al. 2000). The GAW measurements describe long-term changes in the atmospheric conditions. This goal requires measuring sites at which the anthropogenic impact of sources in the area is either avoided or is identified such that the data can be stratified accordingly. For this reason, the locations of these stations are sometimes chosen on summits of high mountains such as Cerro Tololo. Cerro Tololo (2200 m above mean sea level (MSL)) is situated about 50 km east of the Chilean coast at 30°S, where the cities of La Serena and Coquimbo are located. The topography of the area can be described as very complex. The valleys around these mountains are deep, down to 500 m MSL, and the Andes mountain range is only 30 km east of Cerro Tololo with heights of up to 6 km MSL.                                 
+                                                 
+                Investigadoras Principales: Laura Gallardo, Carmen Vega        
+                Emails: [lgallard@u.uchile.cl](mailto:lgallard@u.uchile.cl), [carmen.vega@dgac.gob.cl](mailto:carmen.vega@dgac.gob.cl)
+         
+                
+                Data Site Manager: Francisca Muñoz, CR2 – Center for Climate and Resilience Research.            
+                Email: [fmunoz@dgf.uchile.cl](mailto:fmunoz@dgf.uchile.cl)
                 Av. Blanco Encalada 2002, Santiago, Chile
                 
-                Carmen Vega, DMC - Dirección Meteorológica de Chile                                            
-                Email : [carmen.vega@dgac.gob.cl](mailto:carmen.vega@dgac.gob.cl)
-                Av. Portales 3450, Estación Central, Chile
+                Data scientist: Camilo Menares, CR2 - Center for Climate and Resilence Research.          
+                Email: [cmenares@dgf.uchile.cl](mailto:cmenares@dgf.uchile.cl)
+                Av. Blanco Encalada 2002, Santiago, Chile
                 
-                Data Site Manager: Francisca Muñoz, CR2 – Centro de Ciencia del Clima y la Resiliencia.         
-                Email: [fmunoz@dgf.uchile.cl](mailto:fmunoz@dgf.uchile.cl)
+                Data scientist: Sebastian Villalón, CR2 - Center for Climate and Resilence Research.             
+                Email: [sebastian.villalon@ug.uchile.cl](mailto:sebastian.villalon@ug.uchile.cl)
+                Av. Blanco Encalada 2002, Santiago, Chile
                 
                 Data Disclaimer: These data have been collected at Rapa Nui by the Chilean Weather Office (DMC) under the auspices of the Global Atmospheric Watch (GAW) Programme of the World Meteorological Organization (WMO).
 
@@ -273,7 +279,7 @@ def render_content(tab, Switch_Lang):
                 style={'color': 'black', 'width':'50%','backgroundColor': '#f6f6f6', 'display': 'inline-block', 'margin-top':'50px', 'border-right': '2px solid #0668a1'}), 
                 html.Div([
                                           html.Img(src='data:image/png;base64,{}'.format(encoded_image_tololo), 
-                                   style={'height':'45%', 'width':'450px','margin-right':'75px' ,'margin-left':'75px','margin-top':'75px', 'border': '0px solid #0668a1', 'border-radius': '10px'}), html.Caption('AAAAA', style={'margin-left':'75px'}),
+                                   style={'height':'45%', 'width':'450px','margin-right':'75px' ,'margin-left':'75px','margin-top':'75px', 'border': '0px solid #0668a1', 'border-radius': '10px'}), dcc.Markdown('Créditos: NOAO/NSF/AURA', style={'margin-left':'75px'}),
                                     html.H1("Mapa", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'}), 
                                     dcc.Graph(figure=fig)], 
                                     
@@ -287,7 +293,7 @@ def render_content(tab, Switch_Lang):
                     html.Div([
                     
                 html.H1("Trends", style={'font-size':'24px','text-align': 'center', 'color': '#0668a1','backgroundColor':'#f6f6f6'}),
-        html.Div([html.Label('Trends: ', style={'display': 'inline-block'}),
+        html.Div([html.Label('Trends: ', style={'color':'#0668a1','display': 'inline-block'}),
                   html.Div([dbc.Container(
     [
         dbc.RadioItems(
@@ -310,12 +316,34 @@ def render_content(tab, Switch_Lang):
 )
     ], style={'display':'inline-block'})
                  ,
-                  ]),
+                  
+        html.Label('Period: ', style={'color':'#0668a1','display': 'inline-block'}),
+                  html.Div([dbc.Container(
+    [
+        dbc.RadioItems(
+            options=[
+                {"label": "Daily", "value": "Daily"},
+                {"label": "Monthly", "value": "Monthly"}
+            ],
+            id="radio_trends_period",
+            labelClassName="date-group-labels",
+            labelCheckedClassName="date-group-labels-checked",
+            className="date-group-items",
+            inline=True,
+            value="Daily"
+        ),
+    ],
+    className="p-3",
+)
+    ], style={'display':'inline-block'})
+                 
+                  ])
+        ,
         dcc.Graph(id='Trend_graph', figure={"layout":{"height":400, "width":1080}})], style={'margin':'auto','width':'1080px', 'height':'500px'}),
         html.Div([
             html.Div([
     html.H1("Month-Hour Diagram", style={'font-size':'24px','text-align': 'center', 'color': '#0668a1','backgroundColor':'#f6f6f6'}),
-    html.Div([ html.Label('Date Range:', style={'font-size':'18px', 'backgroundColor':'#f6f6f6'}),
+    html.Div([ html.Label('Date Range:', style={'color':'#0668a1','font-size':'18px', 'backgroundColor':'#f6f6f6'}),
             dcc.DatePickerRange(
                 id='calendar_1',
                 start_date=date(1997, 5, 3),
@@ -341,7 +369,7 @@ def render_content(tab, Switch_Lang):
                 html.Div([                
                 html.Div([html.H1("Tendencia", style={'font-size':'24px','text-align': 'center', 'color': '#0668a1','backgroundColor':'#f6f6f6'}),
                               html.Div([
-    html.Div([html.Label("Tendencia:", style={'font-size':'18px'})],style={'display':'inline-block'}), html.Div([dbc.Container(
+    html.Div([html.Label("Tendencia:", style={'font-size':'18px', 'color':'#0668a1'})],style={'display':'inline-block'}), html.Div([dbc.Container(
     [
         dbc.RadioItems(
             options=[
@@ -361,7 +389,28 @@ def render_content(tab, Switch_Lang):
     ],
     className="p-3",
 )
+    ], style={'display':'inline-block'}), 
+    html.Label('Periodo: ', style={'color':'#0668a1','display': 'inline-block'}),
+                  html.Div([dbc.Container(
+    [
+        dbc.RadioItems(
+            options=[
+                {"label": "Diario", "value": "Diario"},
+                {"label": "Mensual", "value": "Mensual"}
+            ],
+            id="radio_trends_period_esp",
+            labelClassName="date-group-labels",
+            labelCheckedClassName="date-group-labels-checked",
+            className="date-group-items",
+            inline=True,
+            value="Diario"
+        ),
+    ],
+    className="p-3",
+)
     ], style={'display':'inline-block'})
+    
+    
     ]),
             
             dcc.Graph(id='Tendencia_graf', figure={"layout":{"height":400, "width":1080}})], style={'margin':'auto','width':'1080px', 'height':'500px'}),
@@ -369,7 +418,7 @@ def render_content(tab, Switch_Lang):
             html.Div([
                 html.Div([
                 html.H1("Diagrama Mes-Hora", style={'font-size':'24px','text-align': 'center', 'color': '#0668a1','backgroundColor':'#f6f6f6'}), 
-                html.Div([ html.Label('Intervalo de Tiempo:', style={'font-size':'18px', 'backgroundColor':'#f6f6f6'}),
+                html.Div([ html.Label('Intervalo de Tiempo:', style={'color':'#0668a1','font-size':'18px', 'backgroundColor':'#f6f6f6'}),
             dcc.DatePickerRange(
                 id='calendario_1',
                 start_date=date(1997, 5, 3),
@@ -383,7 +432,7 @@ def render_content(tab, Switch_Lang):
                     value=False,
                     )   
                     , html.Div(id='switch-contenido')], style={'margin-left':'5px','margin-top':'20px','width':'525px','height':'400px', 'display': 'inline-block'})
-                ], style={'margin-top':'10px'})
+                ])
         ], style={'backgroundColor': '#f6f6f6', 'height':'1100px'})    
         ]
     elif tab == 'tab-3':
@@ -398,7 +447,7 @@ def render_content(tab, Switch_Lang):
                 start_date=min(DMC_data.index),
                 end_date=max(EBAS_data.index)
                 , style={'margin-left':'60px'}) ,dbc.Button("Descargar ", id="btn_descarga_2", n_clicks=0, style={'margin-left':'5px','display':'inline-block', 'backgroundColor':'#0668a1'}),Download(id="download_2")
-                ,dcc.Markdown(dedent(f''' CITATION – If you use this dataset please acknowledge the Chilean Weather Office, and cite L. Gallardo, A. Henríquez, A. M. Thompson, R. Rondanelli, J. Carrasco, A. Orfanoz-Cheuquelaf and P. Velásquez, The first twenty years (1994-2014) of Ozone soundings from Rapa Nui (27°S, 109°W, 51m a.s.l.), Tellus B, 2016. (DOI: 10.3402/tellusb.v68.29484)'''
+                ,dcc.Markdown(dedent(f''' CITATION – If you use this dataset please acknowledge the Chilean Weather Office, and cite Anet, G. J., Steinbacher, M., Gallardo, L., Velásquez Álvarez, A. P., Emmenegger, L., and Buchmann, B. (2017). Surface ozone in the Southern Hemisphere: 20 years of data from a site with a unique setting in El Tololo, Chile. Atmos. Chem. Phys. 17, 6477–6492. doi:10.5194/acp-17-6477-2017.'''
                     ), style = {'margin-top':'50px', 'margin-left':'60px'}) 
                 
                 ],style={'color': 'black', 'width':'50%', 'margin-left':'0px'
@@ -422,7 +471,7 @@ def render_content(tab, Switch_Lang):
                 start_date=min(DMC_data.index),
                 end_date=max(EBAS_data.index)
                 , style={'margin-left':'60px'}) ,dbc.Button("Descargar ", id="btn_descarga_2", n_clicks=0, style={'margin-left':'5px','display':'inline-block', 'backgroundColor':'#0668a1'}),Download(id="download_2")
-                ,dcc.Markdown(dedent(f''' CITATION – If you use this dataset please acknowledge the Chilean Weather Office, and cite L. Gallardo, A. Henríquez, A. M. Thompson, R. Rondanelli, J. Carrasco, A. Orfanoz-Cheuquelaf and P. Velásquez, The first twenty years (1994-2014) of Ozone soundings from Rapa Nui (27°S, 109°W, 51m a.s.l.), Tellus B, 2016. (DOI: 10.3402/tellusb.v68.29484)'''
+                ,dcc.Markdown(dedent(f''' CITATION – If you use this dataset please acknowledge the Chilean Weather Office, and cite Anet, G. J., Steinbacher, M., Gallardo, L., Velásquez Álvarez, A. P., Emmenegger, L., and Buchmann, B. (2017). Surface ozone in the Southern Hemisphere: 20 years of data from a site with a unique setting in El Tololo, Chile. Atmos. Chem. Phys. 17, 6477–6492. doi:10.5194/acp-17-6477-2017.'''
                     ), style = {'margin-top':'50px', 'margin-left':'60px'}) 
                 
                 ],style={'color': 'black', 'width':'50%', 'margin-left':'0px'
@@ -438,7 +487,7 @@ def render_content(tab, Switch_Lang):
             return [html.Div([html.H1("Lamsal", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'}),
                               
                 dcc.Markdown(dedent(f'''
-                Las tendencias lineales en estos compuestos se calcularón utilizando un modelo de regresión de Fourier según (Lamsal et al., 2015; Tiao et al., 1990) 
+                Las tendencias lineales en estos compuestos se calcularon utilizando un modelo de regresión de Fourier según (Lamsal et al., 2015; Tiao et al., 1990) 
                 para estimar las componentes estacionales y lineales en las observaciones de Ozono . 
                 De acuerdo a (Lamsal et al., 2015), al suponer que la serie temporal de los valores medios mensuales en las observaciones de ozono en Tololo esta 
                 compuesta por tres sub-componentes aditivos, podemos descomponer nuestra regresión como:
@@ -452,16 +501,19 @@ def render_content(tab, Switch_Lang):
                 no lineal dependiente de la autocorrelación y el número total de datos.    
                 
                 '''), style={'margin-left':'60px'})
-            ], style={'width':'50%', 'display':'inline-block', 'margin-top':'50px'}), html.Div([
-                html.Img(src='data:image/png;base64,{}'.format(encoded_image_lamsal), 
-                                   style={'width':'400px' ,'margin-left':'70px','margin-top':'75px', 'border': '0px solid #0668a1', 'border-radius': '10px'})
-                ], style={'display':'inline-block','float':'right' ,'width':'50%'})
+            ], style={'width':'50%', 'display':'inline-block', 'margin-top':'50px'}), 
+                                    html.Div([
+                html.H1("Artículos", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'}),
+                dcc.Markdown(dedent(f'''
+               Anet, G. J., Steinbacher, M., Gallardo, L., Velásquez Álvarez, A. P., Emmenegger, L., and Buchmann, B. (2017). Surface ozone in the Southern Hemisphere: 20 years of data from a site with a unique setting in El Tololo, Chile. Atmos. Chem. Phys. 17, 6477–6492. doi:10.5194/acp-17-6477-2017.
+                '''), style={'margin-left':'60px'})
+                ], style={'margin-top':'50px','display':'inline-block','float':'right' ,'width':'50%'})
                                     ]
         if Switch_Lang==True:        
             return [html.Div([
                 html.H1("Lamsal", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'}),
                 dcc.Markdown(dedent(f'''
-                Las tendencias lineales en estos compuestos se calcularón utilizando un modelo de regresión de Fourier según (Lamsal et al., 2015; Tiao et al., 1990) 
+                Las tendencias lineales en estos compuestos se calcularon utilizando un modelo de regresión de Fourier según (Lamsal et al., 2015; Tiao et al., 1990) 
                 para estimar las componentes estacionales y lineales en las observaciones de Ozono . 
                 De acuerdo a (Lamsal et al., 2015), al suponer que la serie temporal de los valores medios mensuales en las observaciones de ozono en Tololo esta 
                 compuesta por tres sub-componentes aditivos, podemos descomponer nuestra regresión como:
@@ -476,24 +528,29 @@ def render_content(tab, Switch_Lang):
                 
                 '''), style={'margin-left':'60px'})
             ], style={'width':'50%', 'display':'inline-block', 'margin-top':'50px'}), html.Div([
-                html.Img(src='data:image/png;base64,{}'.format(encoded_image_lamsal), 
-                                   style={'width':'400px' ,'margin-left':'70px','margin-top':'75px', 'border': '0px solid #0668a1', 'border-radius': '10px'})
-                ], style={'display':'inline-block','float':'right' ,'width':'50%'})]                    
+                html.H1("Artículos", style={'text-align': 'center','font-family': 'Abel','font-size': '28px','color': '#0668a1','backgroundColor': '#f6f6f6'}),
+                dcc.Markdown(dedent(f'''
+               Anet, G. J., Steinbacher, M., Gallardo, L., Velásquez Álvarez, A. P., Emmenegger, L., and Buchmann, B. (2017). Surface ozone in the Southern Hemisphere: 20 years of data from a site with a unique setting in El Tololo, Chile. Atmos. Chem. Phys. 17, 6477–6492. doi:10.5194/acp-17-6477-2017.
+                '''), style={'margin-left':'60px'})
+                ], style={'margin-top':'50px','display':'inline-block','float':'right' ,'width':'50%'})]                    
 #################################### Trend Graph ###################    
 @app.callback(Output('Trend_graph', 'figure'),
-              Input('radio_trends', 'value'))
-def update_graph(radio_trends):
+              Input('radio_trends', 'value'),
+              Input('radio_trends_period', 'value')
+              )
+def update_graph(radio_trends,radio_trends_period):
     
-    fig = trend(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)  
+    fig = trend(DMC_data, EBAS_data, radio_trends,radio_trends_period, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)  
 
     return fig
 ########################################Grafico de Tendencia###################
 @app.callback(Output('Tendencia_graf', 'figure'),
-              Input('radio_trends_esp', 'value')
+              Input('radio_trends_esp', 'value'),
+              Input('radio_trends_period_esp', 'value')
               )
-def update_graph(radio_trends):
+def update_graph(radio_trends_esp, radio_trends_period_esp):
     
-    fig = tendencia(DMC_data, EBAS_data, radio_trends, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)
+    fig = tendencia(DMC_data, EBAS_data, radio_trends_esp,radio_trends_period_esp,encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)
 
     return fig
 
@@ -504,7 +561,7 @@ def render_content(Switch):
     if Switch == False:
         return [html.Div([
     html.H1("Histograma", style={'font-size':'24px','text-align': 'center','color': '#0668a1','backgroundColor':'#f6f6f6'}),
-    html.Div([html.Label('Intervalo de tiempo:', style={'font-size':'15px'}),
+    html.Div([html.Label('Intervalo de tiempo:', style={'color':'#0668a1','font-size':'15px'}),
             dcc.DatePickerRange(
                 id='calendario_3',
                 start_date=date(1997, 5, 3),
@@ -515,7 +572,7 @@ def render_content(Switch):
         return [html.Div([    
         html.H1("Boxplot", style={'font-size':'24px','text-align': 'center','color': '#0668a1','backgroundColor':'#f6f6f6'}),   
     html.Div([
-        html.Label('Fechas:', style={'font-size':'15px'}),       
+        html.Label('Fechas:', style={'color':'#0668a1','font-size':'15px'}),       
             dcc.DatePickerRange(
                 id='calendario_2',
                 start_date=date(1997, 5, 3),
@@ -523,7 +580,7 @@ def render_content(Switch):
                 )
      ], style={'display':'inline-block'})
         
-    ,html.Div([html.Label("Promedio:", style={'font-size':'18px'}), 
+    ,html.Div([html.Label("Promedio:", style={'color':'#0668a1','font-size':'18px'}), 
     html.Div([dbc.Container(
     [
         dbc.RadioItems(
@@ -552,7 +609,7 @@ def render_content(Switch_ENG):
     if Switch_ENG == False:
         return [html.Div([
     html.H1("Histogram", style={'font-size':'24px','text-align': 'center','color': '#0668a1','backgroundColor':'#f6f6f6'}),
-    html.Div([html.Label('Dates:', style={'font-size':'15px'}),
+    html.Div([html.Label('Dates:', style={'color':'#0668a1','font-size':'15px'}),
             dcc.DatePickerRange(
                 id='calendar_3',
                 start_date=date(1997, 5, 3),
@@ -563,7 +620,7 @@ def render_content(Switch_ENG):
         return [html.Div([    
         html.H1("Boxplot", style={'font-size':'24px','text-align': 'center','color': '#0668a1','backgroundColor':'#f6f6f6'}),   
     html.Div([
-        html.Label('Dates:', style={'font-size':'15px'}),       
+        html.Label('Dates:', style={'color':'#0668a1','font-size':'15px'}),       
             dcc.DatePickerRange(
                 id='calendar_2',
                 start_date=date(1997, 5, 3),
@@ -571,7 +628,7 @@ def render_content(Switch_ENG):
                 )
      ], style={'display':'inline-block'})
         
-    ,html.Div([html.Label("Mean:", style={'font-size':'18px'}), 
+    ,html.Div([html.Label("Mean:", style={'color':'#0668a1','font-size':'18px'}), 
     html.Div([dbc.Container(
     [
         dbc.RadioItems(
@@ -600,7 +657,7 @@ def render_content(Switch_ENG):
       Input('calendar_1', 'end_date')])
 def update_graph(start_date, end_date):
  
-    fig = MonthHour(DMC_data, EBAS_data, start_date, end_date)
+    fig = MonthHour(DMC_data, EBAS_data, start_date, end_date, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)
     return fig
 #######################################Diagrama Mes Hora###################### 
 @app.callback(
@@ -609,7 +666,7 @@ def update_graph(start_date, end_date):
       Input('calendario_1', 'end_date')])
 def update_graph(start_date, end_date):
  
-    fig = MesHora(DMC_data, EBAS_data, start_date, end_date)
+    fig = MesHora(DMC_data, EBAS_data, start_date, end_date, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)
     return fig
 #######################################Boxplot#################################
 @app.callback(
@@ -618,7 +675,7 @@ def update_graph(start_date, end_date):
       Input('calendar_2', 'end_date'), 
       Input('radio_boxplot_eng', 'value')])
 def update_graph(start_date, end_date, radio_boxplot_eng):
-    fig = BoxENG(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_eng)
+    fig = BoxENG(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_eng, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)
     return fig  
 
 ###################################Diagrama cajas y bigotes ###################
@@ -628,7 +685,7 @@ def update_graph(start_date, end_date, radio_boxplot_eng):
       Input('calendario_2', 'end_date'), 
       Input('radio_boxplot_esp', 'value')])
 def update_graph(start_date, end_date, radio_boxplot_esp):
-    fig = BoxESP(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_esp)
+    fig = BoxESP(DMC_data, EBAS_data, start_date, end_date, radio_boxplot_esp, encoded_image_cr2_celeste, encoded_image_DMC, encoded_image_GWA)
     return fig  
 #####################################Histogram#################################
 @app.callback(
@@ -658,7 +715,7 @@ def generate_csv(n_clicks, start_date, end_date):
         df_all = pd.concat([DMC_data,EBAS_data]).loc[start_date:end_date]
         return send_data_frame(df_all.to_csv, filename="Tololo_Time_Series_Dates_Selected.csv")    
 if __name__ == '__main__':
-    app.run_server(debug=True, port = 8051)
+    app.run_server(debug=True, port = 8050)
 
 
                                                               
